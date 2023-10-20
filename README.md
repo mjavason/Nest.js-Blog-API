@@ -1,9 +1,8 @@
-
 # Nest.js Blog API
 
 ## Description
 
-This is a Nest.js framework TypeScript starter repository for building a Blog API. It provides a robust foundation for creating and managing blog content efficiently.
+A simple blog API built using the nest.js framework. Hosted live at [Blog API](https://nest-blog-api-hbra.onrender.com)
 
 ## Installation
 
@@ -18,16 +17,19 @@ $ npm install
 You can run the application in different modes:
 
 - Development Mode:
+
 ```bash
 $ npm run start
 ```
 
 - Watch Mode (for development):
+
 ```bash
 $ npm run start:dev
 ```
 
 - Production Mode:
+
 ```bash
 $ npm run start:prod
 ```
@@ -37,20 +39,22 @@ $ npm run start:prod
 You can run different types of tests:
 
 - Unit Tests:
+
 ```bash
 $ npm run test
 ```
 
 - End-to-End Tests:
+
 ```bash
 $ npm run test:e2e
 ```
 
 - Test Coverage:
+
 ```bash
 $ npm run test:cov
 ```
-
 
 ## Features
 
@@ -65,7 +69,6 @@ This Blog API built with Nest.js includes the following features:
 - **Comments and Feedback**: Allow users to leave comments and feedback on blog posts.
 
 - **Search and Filtering**: Implement search and filtering options for users to find specific content.
-
 
 - **Multi-User Support**: Manage multiple users with roles and permissions.
 
@@ -83,7 +86,7 @@ Replace the placeholders with your actual database URL and secret key.
 
 ## Documentation
 
-For detailed documentation on how to use the Blog API and its endpoints, refer to the [API Documentation](https://your-api-documentation-url).
+For detailed documentation on how to use the Blog API and its endpoints, refer to the [API Documentation](https://nest-blog-api-hbra.onrender.com/docs).
 
 ## Contributing
 
