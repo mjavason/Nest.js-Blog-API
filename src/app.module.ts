@@ -3,9 +3,17 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BlogModule } from './blog/blog.module';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { DB_CONNECTION_STRING } from 'src/constants';
 
 @Module({
-  imports: [BlogModule, UserModule],
+  imports: [
+    BlogModule,
+    UserModule,
+    AuthModule,
+    MongooseModule.forRoot(DB_CONNECTION_STRING),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
