@@ -1,44 +1,65 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-
-// This should be a real class/interface representing a user entity
-export type User = any;
+import { User } from './user.model';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { IUser } from './user.interface';
 
 @Injectable()
 export class UserService {
-  private readonly users = [
-    {
-      userId: 1,
-      username: 'john',
-      password: 'changeme',
-    },
-    {
-      userId: 2,
-      username: 'maria',
-      password: 'guess',
-    },
-  ];
+  constructor(@InjectModel(User.name) private readonly model: Model<IUser>) {}
 
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  async create(body: object) {
+    return await this.model.create(body);
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async getAll(pagination: number) {
+    return await this.model
+      .find({ deleted: false })
+      .limit(10)
+      .skip(pagination)
+      .sort({ createdAt: 'desc' })
+      .select('-__v');
   }
 
-  findOne(id: number = 1, username: string) {
-    // return `This action returns a #${id} user`;
-
-    return this.users.find((user) => user.username === username);
+  async update(searchDetails: object, update: object) {
+    return await this.model
+      .findOneAndUpdate({ ...searchDetails, deleted: false }, update, {
+        new: true,
+      })
+      .select('-__v');
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async getCount(searchData: object) {
+    return await this.model.countDocuments({ ...searchData, deleted: false });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async find(searchData: object) {
+    return await this.model
+      .find({ ...searchData, deleted: false })
+      .select('-__v');
+  }
+
+  async findOne(searchData: object) {
+    return this.model.findOne({ ...searchData, deleted: false }).select('-__v');
+  }
+
+  async softDelete(searchParams: object) {
+    return await this.model
+      .findOneAndUpdate(
+        { ...searchParams, deleted: false },
+        { deleted: true },
+        {
+          new: true,
+        },
+      )
+      .select('-__v');
+  }
+
+  async hardDelete(searchParams: object) {
+    return await this.model.findOneAndDelete(searchParams).select('-__v');
+  }
+
+  async exists(searchParams: object) {
+    return await this.model.exists(searchParams);
   }
 }

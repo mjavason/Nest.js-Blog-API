@@ -5,11 +5,13 @@ config();
 // export const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:3000';
 export const APP_NAME = process.env.APP_NAME || 'Eswama Hub';
 export const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
-export const DB_NAME = process.env.MONGO_DB_NAME || 'event-ticketing';
+export const DB_NAME = process.env.MONGO_DB_NAME || 'nestjs-blog';
 export const DB_CONNECTION_STRING =
   process.env.MONGO_DB_URL + DB_NAME || 'mongodb://localhost:27017/' + DB_NAME;
 export const JWT_TOKEN = process.env.JWT_TOKEN || 'jwt-secret';
 export const SITE_LINK = process.env.SITE_LINK || 'http://localhost:3000';
+export const MAIL_ADDRESS = process.env.MAIL_ADDRESS || 'michaelorji@mail.com';
+export const MAIL_PASSWORD = process.env.MAIL_PASSWORD || 'xxxx';
 
 export const MESSAGES = {
   ACCESS_TOKEN_ERROR_RESPONSE: 'Access token is invalid. Please log in again',

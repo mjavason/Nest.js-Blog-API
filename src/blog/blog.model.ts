@@ -26,8 +26,8 @@ export class Blog {
   @Prop({ required: true })
   image: string;
 
-  @Prop({ default: '5 minutes' })
-  min_read: string;
+  @Prop({ default: 5 })
+  min_read: number;
 
   @Prop({ default: true })
   is_published: boolean;

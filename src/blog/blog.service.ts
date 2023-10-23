@@ -1,26 +1,65 @@
 import { Injectable } from '@nestjs/common';
-import { CreateBlogDto } from './dto/create-blog.dto';
-import { UpdateBlogDto } from './dto/update-blog.dto';
+import { Blog } from './blog.model';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { IUser } from 'src/user/user.interface';
 
 @Injectable()
 export class BlogService {
-  create(createBlogDto: CreateBlogDto) {
-    return 'This action adds a new blog';
+  constructor(@InjectModel(Blog.name) private readonly model: Model<IUser>) {}
+
+  async create(body: object) {
+    return await this.model.create(body);
   }
 
-  findAll() {
-    return `This action returns all blog`;
+  async getAll(pagination: number) {
+    return await this.model
+      .find({ deleted: false })
+      .limit(10)
+      .skip(pagination)
+      .sort({ createdAt: 'desc' })
+      .select('-__v');
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} blog`;
+  async update(searchDetails: object, update: object) {
+    return await this.model
+      .findOneAndUpdate({ ...searchDetails, deleted: false }, update, {
+        new: true,
+      })
+      .select('-__v');
   }
 
-  update(id: number, updateBlogDto: UpdateBlogDto) {
-    return `This action updates a #${id} blog`;
+  async getCount(searchData: object) {
+    return await this.model.countDocuments({ ...searchData, deleted: false });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} blog`;
+  async find(searchData: object) {
+    return await this.model
+      .find({ ...searchData, deleted: false })
+      .select('-__v');
+  }
+
+  async findOne(searchData: object) {
+    return this.model.findOne({ ...searchData, deleted: false }).select('-__v');
+  }
+
+  async softDelete(searchParams: object) {
+    return await this.model
+      .findOneAndUpdate(
+        { ...searchParams, deleted: false },
+        { deleted: true },
+        {
+          new: true,
+        },
+      )
+      .select('-__v');
+  }
+
+  async hardDelete(searchParams: object) {
+    return await this.model.findOneAndDelete(searchParams).select('-__v');
+  }
+
+  async exists(searchParams: object) {
+    return await this.model.exists(searchParams);
   }
 }

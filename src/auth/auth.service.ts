@@ -1,6 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  InternalServerErrorException,
+  Injectable,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
+import { compare } from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -9,16 +14,30 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, pass: string): Promise<any> {
-    const user = await this.UserService.findOne(null, username);
-    if (user && user.password === pass) {
-      const { password, ...result } = user;
-      return result;
+  async validateUser(email: string, password: string) {
+    console.log('authservice validate user');
+
+    const user = await this.UserService.findOne({
+      email: email,
+    });
+
+    try {
+      // Compare the provided password with the stored hashed password
+      const passwordMatch = await compare(password, user.password);
+      if (!passwordMatch) throw new ForbiddenException('Invalid password');
+    } catch (error) {
+      throw new InternalServerErrorException();
     }
-    return null;
+
+    if (!user)
+      throw new ForbiddenException('User email or password is incorrect');
+
+    return user;
   }
 
   async login(user: any) {
+    console.log('authservice login');
+
     const payload = { username: user.username, sub: user.userId };
     return {
       access_token: this.jwtService.sign(payload),
