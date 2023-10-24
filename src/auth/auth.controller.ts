@@ -17,6 +17,8 @@ import {
   ApiTags,
   ApiOperation,
   ApiBody,
+  ApiNotFoundResponse,
+  ApiConflictResponse,
 } from '@nestjs/swagger';
 import { UserService } from 'src/user/user.service';
 import { hashPassword } from 'src/helpers/password.helper';
@@ -50,6 +52,7 @@ export class AuthController {
   @Post('/login')
   @ApiOperation({ summary: 'User login' })
   @ApiBody({ type: LoginUserDto })
+  @ApiNotFoundResponse({ description: 'User does not exist' })
   async login(@Body() body: LoginUserDto) {
     return await this.authService.login(body);
   }
@@ -57,6 +60,7 @@ export class AuthController {
   @Post('/register')
   @ApiOperation({ summary: 'User registration' })
   @ApiBody({ type: CreateUserDto })
+  @ApiConflictResponse({ description: 'User already exists' })
   async register(@Body() body: CreateUserDto): Promise<ResponseData<IUser>> {
     let existing_user = await this.userService.findOne({
       email: body.email,

@@ -2,6 +2,7 @@ import {
   ForbiddenException,
   InternalServerErrorException,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
@@ -19,11 +20,14 @@ export class AuthService {
       email: email,
     });
 
+    if (!user) throw new NotFoundException('User does not exist');
+
     try {
       // Compare the provided password with the stored hashed password
       const passwordMatch = await compare(password, user.password);
       if (!passwordMatch) throw new ForbiddenException('Invalid password');
     } catch (error) {
+      console.log(error);
       throw new InternalServerErrorException();
     }
 
