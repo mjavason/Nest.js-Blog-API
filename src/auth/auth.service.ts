@@ -15,8 +15,6 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string) {
-    console.log('authservice validate user');
-
     const user = await this.UserService.findOne({
       email: email,
     });
@@ -36,13 +34,9 @@ export class AuthService {
   }
 
   async login(user: any) {
-    console.log('authservice login');
-
     const payload = { username: user.username, sub: user.userId };
     return {
       access_token: this.jwtService.sign(payload),
     };
-
-    // return user;
   }
 }

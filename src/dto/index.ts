@@ -1,6 +1,19 @@
-export interface ResponseData<T> {
-    status: number | string;
-    message: string;
-    data: T | T[];
-  }
-  
+import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+
+export class ResponseDto<T> {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  status: 200;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  message: 'Successful!';
+
+  @ApiProperty()
+  @IsNotEmpty()
+  data: T | T[];
+}

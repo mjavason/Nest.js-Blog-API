@@ -1,6 +1,6 @@
 import { MESSAGES } from '../constants';
 import { HttpStatus } from '@nestjs/common';
-import { ResponseData } from 'src/dto';
+import { ResponseData } from 'src/interfaces/response.interface';
 
 export function SuccessMsgResponse(message = MESSAGES.SUCCESSFUL) {
   return { status: HttpStatus.OK, message };
@@ -10,4 +10,4 @@ export function SuccessResponse(data: any, message = MESSAGES.SUCCESSFUL) {
   return { status: HttpStatus.OK, message, data };
 }
 
-HttpStatus.CREATED
+HttpStatus.CREATED;

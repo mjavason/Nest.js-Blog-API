@@ -17,7 +17,7 @@ export class CreateBlogDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsObjectIdOrHexString()
-  author: Types.ObjectId;
+  author: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -48,7 +48,7 @@ export class UpdateBlogDto {
   @ApiProperty()
   @IsOptional()
   @IsObjectIdOrHexString()
-  author: Types.ObjectId;
+  author: string;
 
   @ApiProperty()
   @IsOptional()
@@ -69,7 +69,7 @@ export class FindBlogDto {
   @ApiProperty()
   @IsOptional()
   @IsObjectIdOrHexString()
-  _id: Types.ObjectId;
+  _id: string;
 
   @ApiProperty()
   @IsOptional()
@@ -77,16 +77,16 @@ export class FindBlogDto {
   title: string;
 }
 
-export class BlogIdDto {
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsObjectIdOrHexString()
-  id: Types.ObjectId;
-}
-
 export class GetAllBlogsDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
   pagination: number;
+}
+
+export class BlogIdDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsObjectIdOrHexString()
+  id: string;
 }

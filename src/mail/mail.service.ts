@@ -1,5 +1,9 @@
-import nodeMailer from 'nodemailer';
+import * as nodeMailer from 'nodemailer';
+import fs from 'fs';
+import * as handlebars from 'handlebars';
 import { MAIL_ADDRESS, MAIL_PASSWORD } from '../constants';
+import logger from 'src/helpers/logger';
+import { Injectable } from '@nestjs/common';
 
 // Email account setup and login. You need to pass in your email credentials and use this app to control it.
 const transporter = nodeMailer.createTransport({
@@ -12,7 +16,8 @@ const transporter = nodeMailer.createTransport({
   },
 });
 
-class Service {
+@Injectable()
+export class MailService {
   sendMail = async (
     recipientEmail: string,
     mailHtmlBody: string,
@@ -24,8 +29,22 @@ class Service {
       to: recipientEmail,
       subject: mailSubject,
       html: mailHtmlBody,
-    });
+    }, );
   };
-}
 
-export const mailService = new Service();
+  async renderMailTemplate(templatePath: string, data: object) {
+    try {
+      // Load the email template
+      // const templatePath = './email-templates/welcome-email.html';
+      const emailTemplate = fs.readFileSync(templatePath, 'utf-8');
+
+      // Compile the template
+      const compiledTemplate = handlebars.compile(emailTemplate);
+      return compiledTemplate(data);
+    } catch (e) {
+      logger.error('Error compiling template');
+      console.log(e);
+      return false;
+    }
+  }
+}

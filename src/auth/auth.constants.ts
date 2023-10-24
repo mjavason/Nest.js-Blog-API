@@ -5,7 +5,7 @@ config();
 // export const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:3000';
 export const APP_NAME = process.env.APP_NAME || 'Eswama Hub';
 export const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
-export const JWT_TOKEN = process.env.JWT_TOKEN || 'jwt-secret';
+export const JWT_SECRET = process.env.JWT_SECRET || 'jwt-secret';
 export const SITE_LINK = process.env.SITE_LINK || 'http://localhost:3000';
 
 export const MESSAGES = {

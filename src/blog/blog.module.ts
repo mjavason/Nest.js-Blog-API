@@ -3,6 +3,7 @@ import { BlogService } from './blog.service';
 import { BlogController } from './blog.controller';
 import { Blog, BlogSchema } from './blog.model';
 import { MongooseModule } from '@nestjs/mongoose';
+import { IsObjectIdOrHexString } from 'src/decorators/is_object_id.decorator';
 
 @Module({
   imports: [

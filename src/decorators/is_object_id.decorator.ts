@@ -1,6 +1,4 @@
 import {
-  IsOptional,
-  IsString,
   ValidationArguments,
   ValidationOptions,
   ValidatorConstraint,
@@ -11,7 +9,7 @@ import { Types } from 'mongoose';
 
 @ValidatorConstraint({ async: false })
 class IsObjectIdOrHexStringConstraint implements ValidatorConstraintInterface {
-  validate(value: any, args: ValidationArguments) {
+  validate(value: any) {
     if (typeof value === 'string') {
       // Check if it's a valid ObjectId or a valid hex string
       return Types.ObjectId.isValid(value) || /^[0-9a-fA-F]{24}$/.test(value);

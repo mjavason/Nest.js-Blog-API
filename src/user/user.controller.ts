@@ -20,11 +20,18 @@ import {
   ApiBearerAuth,
   ApiResponse,
   ApiTags,
-} from '@nestjs/swagger';
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiBody,
+  ApiInternalServerErrorResponse,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+} from '@nestjs/swagger'; // Import Swagger decorators
 import { MESSAGES } from 'src/constants';
 import { SuccessResponse } from 'src/helpers/response.helper';
 import { IUser } from './user.interface';
-import { ResponseData } from 'src/dto';
+import { ResponseData } from 'src/interfaces/response.interface';
 import {
   CreateUserDto,
   FindUserDto,
@@ -32,19 +39,28 @@ import {
   UpdateUserDto,
   GetAllUsersDto,
 } from './user.dto';
+import { ResponseDto } from 'src/dto';
 
 @Controller('user')
 @ApiTags('User')
 @ApiBearerAuth()
+@ApiResponse({
+  status: HttpStatus.OK,
+  type: ResponseDto,
+  description: 'Successful response with data',
+})
+@ApiInternalServerErrorResponse({ description: MESSAGES.INTERNAL_ERROR })
+@ApiBadRequestResponse({ description: MESSAGES.BAD_PARAMETERS })
 @UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private readonly service: UserService) {}
 
-  // Create a new user
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() body: CreateUserDto): Promise<object> {
-    // body.organizer = .locals.user._id;
+  @ApiCreatedResponse({ description: MESSAGES.CREATED })
+  @ApiOperation({ summary: 'Create a new user' })
+  @ApiBody({ type: CreateUserDto })
+  async create(@Body() body: CreateUserDto): Promise<ResponseData<IUser>> {
     const data = await this.service.create(body);
 
     if (!data) throw new InternalServerErrorException();
@@ -52,8 +68,8 @@ export class UserController {
     return SuccessResponse(data);
   }
 
-  // Get a list of all users with optional pagination
   @Get()
+  @ApiOperation({ summary: 'Get the latest 10 users' })
   async getAllDefault(): Promise<ResponseData<IUser[]>> {
     const data = await this.service.getAll(0);
 
@@ -63,8 +79,12 @@ export class UserController {
     return SuccessResponse(data);
   }
 
-  // Find users based on search criteria
   @Get('search')
+  @ApiNotFoundResponse({ description: MESSAGES.NOT_FOUND })
+  @ApiOperation({ summary: 'Find users based on search criteria' })
+  @ApiQuery({
+    type: FindUserDto,
+  })
   async find(@Query() query: FindUserDto): Promise<ResponseData<IUser[]>> {
     const data = await this.service.find(query);
 
@@ -74,30 +94,33 @@ export class UserController {
     return SuccessResponse(data);
   }
 
-  // Check if users exist based on search criteria
   @Get('exists')
-  async exists(@Query() query: FindUserDto): Promise<object> {
+  @ApiOperation({ summary: 'Check if users exist based on search criteria' })
+  @ApiQuery({ type: FindUserDto})
+  async exists(@Query() query: FindUserDto): Promise<ResponseData<[]>> {
     const data = await this.service.exists(query);
 
-    // If nothing exists, return 'false'
-    if (!data) return SuccessResponse(false);
+    if (!data) return SuccessResponse([]);
 
     return SuccessResponse(data);
   }
 
-  // Get the count of users based on search criteria
   @Get('count')
-  async getCount(@Query() query: FindUserDto): Promise<object> {
+  @ApiOperation({
+    summary: 'Get the count of users based on search criteria',
+  })
+  @ApiQuery({ type: FindUserDto})
+  async getCount(@Query() query: FindUserDto): Promise<ResponseData<number>> {
     const data = await this.service.getCount(query);
 
-    // If nothing exists, return 0 as the count
     if (!data) return SuccessResponse(0);
 
     return SuccessResponse(data);
   }
 
-  // Get a list of all users with optional pagination
   @Get(':pagination')
+  @ApiOperation({ summary: 'Get a list of all users with optional pagination' })
+  @ApiNotFoundResponse({ description: MESSAGES.NOT_FOUND })
   async getAll(@Param() param: GetAllUsersDto): Promise<object> {
     let { pagination } = param;
     if (!pagination) pagination = 1;
@@ -112,14 +135,15 @@ export class UserController {
     return SuccessResponse(data);
   }
 
-  // Update an existing user
   @Patch(':id')
+  @ApiOperation({ summary: 'Update an existing user' })
+  @ApiNotFoundResponse({ description: MESSAGES.NOT_FOUND })
+  @ApiBody({ type: UpdateUserDto, description: 'Updated user data' })
   async update(
     @Param() param: UserIdDto,
     @Body() body: UpdateUserDto,
   ): Promise<object> {
     const { id } = param;
-
     const data = await this.service.update({ _id: id }, body);
 
     if (!data) throw new NotFoundException();
@@ -127,8 +151,9 @@ export class UserController {
     return SuccessResponse(data, MESSAGES.UPDATED);
   }
 
-  // Soft delete a user
   @Delete(':id')
+  @ApiOperation({ summary: 'Soft delete a user' })
+  @ApiNotFoundResponse({ description: MESSAGES.NOT_FOUND })
   async delete(@Param() param: UserIdDto): Promise<object> {
     const { id } = param;
 
@@ -139,8 +164,9 @@ export class UserController {
     return SuccessResponse(data, MESSAGES.DELETED);
   }
 
-  // Hard delete a user (for admins only)
   @Delete(':id/hard')
+  @ApiOperation({ summary: 'Hard delete a user (for admins only)' })
+  @ApiNotFoundResponse({ description: MESSAGES.NOT_FOUND })
   async hardDelete(@Param() param: UserIdDto): Promise<object> {
     const { id } = param;
 

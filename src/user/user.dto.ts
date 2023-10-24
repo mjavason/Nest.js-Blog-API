@@ -64,7 +64,7 @@ export class FindUserDto {
   @ApiProperty()
   @IsOptional()
   @IsObjectIdOrHexString()
-  _id: Types.ObjectId;
+  _id: string;
 
   @ApiProperty()
   @IsOptional()
@@ -76,7 +76,7 @@ export class UserIdDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsObjectIdOrHexString()
-  id: Types.ObjectId;
+  id: string;
 }
 
 export class GetAllUsersDto {

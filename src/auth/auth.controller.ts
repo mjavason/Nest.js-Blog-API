@@ -6,44 +6,63 @@ import {
   InternalServerErrorException,
   ForbiddenException,
   Body,
+  HttpStatus,
 } from '@nestjs/common';
 import { LocalAuthGuard } from './local-auth.guard';
 import { AuthService } from './auth.service';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiInternalServerErrorResponse,
+  ApiResponse,
+  ApiTags,
+  ApiOperation,
+  ApiBody,
+} from '@nestjs/swagger';
 import { UserService } from 'src/user/user.service';
 import { hashPassword } from 'src/helpers/password.helper';
 import { SuccessResponse } from 'src/helpers/response.helper';
 import { CreateUserDto } from 'src/user/user.dto';
-import { ResponseData } from 'src/dto';
+import { ResponseData } from 'src/interfaces/response.interface';
 import { IUser } from 'src/user/user.interface';
 import { LoginUserDto } from './auth.dto';
+import { JWT_SECRET, MESSAGES } from './auth.constants';
+import { signJwt } from 'src/utils/jwt';
+import { MailTemplateService } from 'src/mail/mail_templates.service';
+import { ResponseDto } from 'src/dto';
 
 @Controller('auth')
 @ApiTags('Auth')
+@ApiResponse({
+  status: HttpStatus.OK,
+  type: ResponseDto,
+  description: 'Successful response with data',
+})
+@ApiInternalServerErrorResponse({ description: MESSAGES.INTERNAL_ERROR })
+@ApiBadRequestResponse({ description: MESSAGES.BAD_PARAMETERS })
 export class AuthController {
   constructor(
     private authService: AuthService,
     private userService: UserService,
+    private mailTemplateService: MailTemplateService,
   ) {}
 
   @UseGuards(LocalAuthGuard)
   @Post('/login')
-  async login(@Request() req: LoginUserDto) {
-    console.log('Inside auth controller login route');
-
-    return await this.authService.login(req);
+  @ApiOperation({ summary: 'User login' })
+  @ApiBody({ type: LoginUserDto })
+  async login(@Body() body: LoginUserDto) {
+    return await this.authService.login(body);
   }
 
   @Post('/register')
+  @ApiOperation({ summary: 'User registration' })
+  @ApiBody({ type: CreateUserDto })
   async register(@Body() body: CreateUserDto): Promise<ResponseData<IUser>> {
-    // const cwd = process.cwd();
-    // console.log('Current working directory:', cwd);
-
     let existing_user = await this.userService.findOne({
       email: body.email,
     });
 
-    //Hash password
+    // Hash password
     try {
       const hashedPassword = await hashPassword(body.password);
       body.password = hashedPassword;
@@ -58,21 +77,21 @@ export class AuthController {
     if (!data) throw new InternalServerErrorException();
 
     // Send mail confirmation email
-    // let token = await signJwt({ _id: data._id }, JWT_SECRET, '1h');
+    let token = await signJwt({ _id: data._id }, JWT_SECRET, '1h');
 
-    // let sendMail = await mailController.sendWelcomeMail(
-    //   body.email,
-    //   body.first_name,
-    //   body.last_name,
-    //   token,
-    // );
+    let sendMail = await this.mailTemplateService.sendWelcomeMail(
+      body.email,
+      body.first_name,
+      body.last_name,
+      token,
+    );
 
-    // if (!sendMail)
-    //   return SuccessResponse(
-    //     res,
-    //     data,
-    //     'User registered successfully. Welcome mail failed',
-    //   );
+    if (!sendMail) {
+      return SuccessResponse(
+        data,
+        'User registered successfully. Welcome mail failed',
+      );
+    }
 
     return SuccessResponse({
       first_name: data.first_name,
