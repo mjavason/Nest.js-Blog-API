@@ -53,8 +53,8 @@ export class AuthController {
   @ApiOperation({ summary: 'User login' })
   @ApiBody({ type: LoginUserDto })
   @ApiNotFoundResponse({ description: 'User does not exist' })
-  async login(@Body() body: LoginUserDto) {
-    return await this.authService.login(body);
+  async login(@Request() req) {
+    return await this.authService.login(req);
   }
 
   @Post('/register')

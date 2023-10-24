@@ -12,6 +12,8 @@ import {
   InternalServerErrorException,
   NotFoundException,
   Query,
+  Request,
+  ForbiddenException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -27,6 +29,8 @@ import {
   ApiInternalServerErrorResponse,
   ApiCreatedResponse,
   ApiNotFoundResponse,
+  ApiUnauthorizedResponse,
+  ApiForbiddenResponse,
 } from '@nestjs/swagger'; // Import Swagger decorators
 import { MESSAGES } from 'src/constants';
 import { SuccessResponse } from 'src/helpers/response.helper';
@@ -43,7 +47,7 @@ import { ResponseDto } from 'src/dto';
 
 @Controller('user')
 @ApiTags('User')
-@ApiBearerAuth()
+@ApiBearerAuth('jwt')
 @ApiResponse({
   status: HttpStatus.OK,
   type: ResponseDto,
@@ -51,9 +55,22 @@ import { ResponseDto } from 'src/dto';
 })
 @ApiInternalServerErrorResponse({ description: MESSAGES.INTERNAL_ERROR })
 @ApiBadRequestResponse({ description: MESSAGES.BAD_PARAMETERS })
+@ApiUnauthorizedResponse({ description: 'Unauthorized' })
 @UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private readonly service: UserService) {}
+
+  @Get('profile')
+  @ApiForbiddenResponse({ description: 'No user logged in' })
+  @ApiOperation({ summary: 'Get logged in users profile' })
+  async getProfile(@Request() req): Promise<ResponseData<IUser>> {
+    // console.log(req)
+    const { user } = req;
+
+    if (!user) throw new ForbiddenException('No user logged in');
+
+    return SuccessResponse(user);
+  }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -96,7 +113,7 @@ export class UserController {
 
   @Get('exists')
   @ApiOperation({ summary: 'Check if users exist based on search criteria' })
-  @ApiQuery({ type: FindUserDto})
+  @ApiQuery({ type: FindUserDto })
   async exists(@Query() query: FindUserDto): Promise<ResponseData<[]>> {
     const data = await this.service.exists(query);
 
@@ -109,7 +126,7 @@ export class UserController {
   @ApiOperation({
     summary: 'Get the count of users based on search criteria',
   })
-  @ApiQuery({ type: FindUserDto})
+  @ApiQuery({ type: FindUserDto })
   async getCount(@Query() query: FindUserDto): Promise<ResponseData<number>> {
     const data = await this.service.getCount(query);
 

@@ -12,6 +12,7 @@ import {
   NotFoundException,
   Query,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { BlogService } from './blog.service';
 import {
@@ -24,6 +25,7 @@ import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiInternalServerErrorResponse,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger'; // Import Swagger decorators
 import { MESSAGES } from 'src/constants';
 import { SuccessResponse } from 'src/helpers/response.helper';
@@ -41,7 +43,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('blog')
 @ApiTags('Blog')
-@ApiBearerAuth()
+@ApiBearerAuth('jwt')
 @ApiResponse({
   status: HttpStatus.OK,
   type: ResponseDto,
@@ -49,6 +51,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 })
 @ApiInternalServerErrorResponse({ description: MESSAGES.INTERNAL_ERROR })
 @ApiBadRequestResponse({ description: MESSAGES.BAD_PARAMETERS })
+@ApiUnauthorizedResponse({ description: 'Unauthorized' })
 @UseGuards(JwtAuthGuard)
 export class BlogController {
   constructor(private readonly service: BlogService) {}
@@ -59,7 +62,8 @@ export class BlogController {
   @ApiOperation({ summary: 'Create a new blog' }) // Add an API operation summary
   @ApiBody({ type: CreateBlogDto }) // Specify the request body DTO
   async create(@Body() body: CreateBlogDto): Promise<object> {
-    // body.organizer = .locals.blog._id;
+    console.log(Req);
+
     const data = await this.service.create(body);
 
     if (!data) throw new InternalServerErrorException();
