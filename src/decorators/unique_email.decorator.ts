@@ -1,7 +1,6 @@
 import { InjectModel } from '@nestjs/mongoose';
 import {
   registerDecorator,
-  ValidationArguments,
   ValidationOptions,
   ValidatorConstraint,
   ValidatorConstraintInterface,
@@ -21,7 +20,7 @@ export class IsUniqueEmailConstraint implements ValidatorConstraintInterface {
     return !user;
   }
 
-  defaultMessage(args: ValidationArguments) {
+  defaultMessage() {
     return `This email address already exists`;
   }
 }

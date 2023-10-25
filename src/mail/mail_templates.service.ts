@@ -48,7 +48,7 @@ export class MailTemplateService {
 
   // Send the reset email
   async sendPasswordResetEmail(email: string, token: string) {
-    let user = await this.userService.findOne({ email });
+    const user = await this.userService.findOne({ email });
     if (!user) {
       console.log(`User with email: ${email} does not exist`);
       return false;

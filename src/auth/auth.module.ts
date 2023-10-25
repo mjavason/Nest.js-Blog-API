@@ -8,7 +8,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { JWT_SECRET } from 'src/constants';
 import { JwtStrategy } from './jwt.strategy';
 import { MailModule } from 'src/mail/mail.module';
-import { MailTemplateService } from 'src/mail/mail_templates.service';
 
 @Module({
   imports: [

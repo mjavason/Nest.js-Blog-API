@@ -23,7 +23,6 @@ import {
   ApiResponse,
   ApiTags,
   ApiOperation,
-  ApiParam,
   ApiQuery,
   ApiBody,
   ApiInternalServerErrorResponse,

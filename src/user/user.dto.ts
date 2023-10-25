@@ -1,10 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsOptional, IsEnum, IsEmail } from 'class-validator';
-import { Types } from 'mongoose';
+import {
+  IsNotEmpty,
+  IsString,
+  IsOptional,
+  IsEnum,
+  IsEmail,
+} from 'class-validator';
 import { IsObjectIdOrHexString } from 'src/decorators/is_object_id.decorator';
-import { PasswordStrength } from 'src/decorators/password_strength.decorator';
-import { IsUniqueEmail } from 'src/decorators/unique_email.decorator';
-
 
 export class CreateUserDto {
   @ApiProperty()

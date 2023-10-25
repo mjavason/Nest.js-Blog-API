@@ -29,7 +29,7 @@ export class MailService {
       to: recipientEmail,
       subject: mailSubject,
       html: mailHtmlBody,
-    }, );
+    });
   };
 
   async renderMailTemplate(templatePath: string, data: object) {

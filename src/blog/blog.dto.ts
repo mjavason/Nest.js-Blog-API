@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
-import { Types } from 'mongoose';
 import { IsObjectIdOrHexString } from 'src/decorators/is_object_id.decorator';
 
 export class CreateBlogDto {

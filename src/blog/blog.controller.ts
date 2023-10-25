@@ -20,7 +20,6 @@ import {
   ApiOperation,
   ApiResponse,
   ApiBody,
-  ApiParam,
   ApiQuery,
   ApiBadRequestResponse,
   ApiBearerAuth,

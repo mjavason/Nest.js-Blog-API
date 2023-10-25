@@ -11,12 +11,12 @@ import { compare } from 'bcrypt';
 @Injectable()
 export class AuthService {
   constructor(
-    private UserService: UserService,
+    private userService: UserService,
     private jwtService: JwtService,
   ) {}
 
   async validateUser(email: string, password: string) {
-    const user = await this.UserService.findOne({
+    const user = await this.userService.findOne({
       email: email,
     });
 

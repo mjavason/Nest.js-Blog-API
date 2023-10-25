@@ -1,6 +1,5 @@
 import { MESSAGES } from '../constants';
 import { HttpStatus } from '@nestjs/common';
-import { ResponseData } from 'src/interfaces/response.interface';
 
 export function SuccessMsgResponse(message = MESSAGES.SUCCESSFUL) {
   return { status: HttpStatus.OK, message };

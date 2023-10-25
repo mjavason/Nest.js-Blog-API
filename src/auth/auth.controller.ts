@@ -62,7 +62,7 @@ export class AuthController {
   @ApiBody({ type: CreateUserDto })
   @ApiConflictResponse({ description: 'User already exists' })
   async register(@Body() body: CreateUserDto): Promise<ResponseData<IUser>> {
-    let existing_user = await this.userService.findOne({
+    const existing_user = await this.userService.findOne({
       email: body.email,
     });
 
@@ -81,9 +81,9 @@ export class AuthController {
     if (!data) throw new InternalServerErrorException();
 
     // Send mail confirmation email
-    let token = await signJwt({ _id: data._id }, JWT_SECRET, '1h');
+    const token = await signJwt({ _id: data._id }, JWT_SECRET, '1h');
 
-    let sendMail = await this.mailTemplateService.sendWelcomeMail(
+    const sendMail = await this.mailTemplateService.sendWelcomeMail(
       body.email,
       body.first_name,
       body.last_name,

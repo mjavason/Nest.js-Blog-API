@@ -20,7 +20,7 @@ export class BlogService {
       .sort({ createdAt: 'desc' })
       .select('-__v');
   }
- 
+
   async update(searchDetails: object, update: object) {
     return await this.model
       .findOneAndUpdate({ ...searchDetails, deleted: false }, update, {
