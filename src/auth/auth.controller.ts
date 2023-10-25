@@ -27,7 +27,7 @@ import { CreateUserDto } from 'src/user/user.dto';
 import { ResponseData } from 'src/interfaces/response.interface';
 import { IUser } from 'src/user/user.interface';
 import { LoginUserDto } from './auth.dto';
-import { JWT_SECRET, MESSAGES } from './auth.constants';
+import { JWT_SECRET, MESSAGES } from 'src/constants';
 import { signJwt } from 'src/utils/jwt';
 import { MailTemplateService } from 'src/mail/mail_templates.service';
 import { ResponseDto } from 'src/dto';

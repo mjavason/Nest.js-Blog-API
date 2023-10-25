@@ -1,0 +1,18 @@
+Generate new nest project
+
+Copy constants, decorators, dto, helpers, interfaces and utils folders.
+
+Fill in right contents in constants file
+
+If using database, setup mongoose with your db connection string in app.module file.
+
+In main.ts setup validation pipes, swagger and right localhost port. Include any other middleware you want too.
+
+Generate user and auth modules, controllers, models, and services
+
+Generate mail module and services if need be
+
+Generate jwt-auth and local-auth strategies and guards
+
+
+
