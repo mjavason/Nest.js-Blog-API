@@ -7,7 +7,7 @@ export interface IBlog {
   author: Types.ObjectId | string;
   tags: string[];
   image: string;
-  min_read: string;
+  min_read: number;
   is_published: boolean;
   deleted?: boolean;
 }

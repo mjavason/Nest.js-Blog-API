@@ -24,7 +24,7 @@ import { UserService } from 'src/user/user.service';
 import { hashPassword } from 'src/helpers/password.helper';
 import { SuccessResponse } from 'src/helpers/response.helper';
 import { CreateUserDto } from 'src/user/user.dto';
-import { ResponseData } from 'src/interfaces/response.interface';
+import { IResponseData } from 'src/interfaces/response.interface';
 import { IUser } from 'src/user/user.interface';
 import { LoginUserDto } from './auth.dto';
 import { JWT_SECRET, MESSAGES } from 'src/constants';
@@ -61,7 +61,7 @@ export class AuthController {
   @ApiOperation({ summary: 'User registration' })
   @ApiBody({ type: CreateUserDto })
   @ApiConflictResponse({ description: 'User already exists' })
-  async register(@Body() body: CreateUserDto): Promise<ResponseData<IUser>> {
+  async register(@Body() body: CreateUserDto): Promise<IResponseData<IUser>> {
     const existing_user = await this.userService.findOne({
       email: body.email,
     });

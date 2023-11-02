@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { Blog } from './blog.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { IUser } from 'src/user/user.interface';
+import { IBlog } from './blog.interface';
 
 @Injectable()
 export class BlogService {
-  constructor(@InjectModel(Blog.name) private readonly model: Model<IUser>) {}
+  constructor(@InjectModel(Blog.name) private readonly model: Model<IBlog>) {}
 
   async create(body: object) {
     return await this.model.create(body);

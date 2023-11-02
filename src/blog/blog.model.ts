@@ -1,11 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 import { User } from 'src/user/user.model';
-
-export type BlogDocument = HydratedDocument<Blog>;
+import { IBlog } from './blog.interface';
 
 @Schema()
-export class Blog {
+export class Blog implements IBlog {
   @Prop({
     type: Types.ObjectId,
     required: true,

@@ -34,7 +34,7 @@ import {
 import { MESSAGES } from 'src/constants';
 import { SuccessResponse } from 'src/helpers/response.helper';
 import { IUser } from './user.interface';
-import { ResponseData } from 'src/interfaces/response.interface';
+import { IResponseData } from 'src/interfaces/response.interface';
 import {
   CreateUserDto,
   FindUserDto,
@@ -62,7 +62,7 @@ export class UserController {
   @Get('profile')
   @ApiForbiddenResponse({ description: 'No user logged in' })
   @ApiOperation({ summary: 'Get logged in users profile' })
-  async getProfile(@Request() req): Promise<ResponseData<IUser>> {
+  async getProfile(@Request() req): Promise<IResponseData<IUser>> {
     // console.log(req)
     const { user } = req;
 
@@ -76,7 +76,7 @@ export class UserController {
   @ApiCreatedResponse({ description: MESSAGES.CREATED })
   @ApiOperation({ summary: 'Create a new user' })
   @ApiBody({ type: CreateUserDto })
-  async create(@Body() body: CreateUserDto): Promise<ResponseData<IUser>> {
+  async create(@Body() body: CreateUserDto): Promise<IResponseData<IUser>> {
     const data = await this.service.create(body);
 
     if (!data) throw new InternalServerErrorException();
@@ -86,7 +86,7 @@ export class UserController {
 
   @Get()
   @ApiOperation({ summary: 'Get the latest 10 users' })
-  async getAllDefault(): Promise<ResponseData<IUser[]>> {
+  async getAllDefault(): Promise<IResponseData<IUser[]>> {
     const data = await this.service.getAll(0);
 
     if (!data) throw new InternalServerErrorException();
@@ -101,7 +101,7 @@ export class UserController {
   @ApiQuery({
     type: FindUserDto,
   })
-  async find(@Query() query: FindUserDto): Promise<ResponseData<IUser[]>> {
+  async find(@Query() query: FindUserDto): Promise<IResponseData<IUser[]>> {
     const data = await this.service.find(query);
 
     if (!data) throw new InternalServerErrorException();
@@ -113,7 +113,7 @@ export class UserController {
   @Get('exists')
   @ApiOperation({ summary: 'Check if users exist based on search criteria' })
   @ApiQuery({ type: FindUserDto })
-  async exists(@Query() query: FindUserDto): Promise<ResponseData<[]>> {
+  async exists(@Query() query: FindUserDto): Promise<IResponseData<[]>> {
     const data = await this.service.exists(query);
 
     if (!data) return SuccessResponse([]);
@@ -126,7 +126,7 @@ export class UserController {
     summary: 'Get the count of users based on search criteria',
   })
   @ApiQuery({ type: FindUserDto })
-  async getCount(@Query() query: FindUserDto): Promise<ResponseData<number>> {
+  async getCount(@Query() query: FindUserDto): Promise<IResponseData<number>> {
     const data = await this.service.getCount(query);
 
     if (!data) return SuccessResponse(0);
